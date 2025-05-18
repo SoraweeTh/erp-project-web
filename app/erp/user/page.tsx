@@ -84,8 +84,8 @@ export default function User() {
         try {
             const result = await Swal.fire({
                 icon: 'warning',
-                title: 'ARE YOU SURE !',
-                text: `Do you want to delete ${user.username} ?`,
+                title: 'CONFIRM DELETE !',
+                text: `Are you sure you want to delete ${user.username} ?`,
                 showCancelButton: true,
                 showConfirmButton: true
             })
@@ -140,7 +140,7 @@ export default function User() {
                 </button>
             </div>
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                <table className="table w-full">
+                <table className="table">
                     <thead>
                         <tr>
                             <th>Email</th>
