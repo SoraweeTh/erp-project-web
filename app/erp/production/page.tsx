@@ -150,18 +150,18 @@ export default function Production() {
                                 <td>{production.name}</td>
                                 <td>{production.detail}</td>
                                 <td className="flex gap-2">
-                                    <button className="button">
+                                    <Link href={`/erp/formular/${production.id}`} className="button">
                                         <i className="fas fa-file-alt mr-2"></i>
                                         Recipes
-                                    </button>
-                                    <button className="button">
+                                    </Link>
+                                    <Link href={`/erp/production/log/${production.id}`} className="button">
                                         <i className="fas fa-check mr-2"></i>
                                         Save
-                                    </button>
-                                    <button className="button">
-                                        <i className="fas fa-file-alt mr-2"></i>
-                                        Save loss
-                                    </button>
+                                    </Link>
+                                    <Link href={``} className="button">
+                                        <i className="fas fa-flag mr-2"></i>
+                                        Lost
+                                    </Link>
                                     <button className="table-action-btn table-edit-btn"
                                         onClick={() => handleEdit(production)}
                                     >

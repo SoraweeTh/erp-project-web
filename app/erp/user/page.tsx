@@ -136,7 +136,7 @@ export default function User() {
                         setShowModal(true)
                     }}>
                     <i className="fas fa-plus mr-2"></i>
-                    Add User
+                    Add
                 </button>
             </div>
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
