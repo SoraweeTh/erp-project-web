@@ -127,6 +127,9 @@ export default function ProductionLog() {
 
     const closeModal = () => {
         setShowModal(false);
+        setCreatedAt(new Date());
+        setQuantity(0);
+        setRemark('');
     }
 
     return (

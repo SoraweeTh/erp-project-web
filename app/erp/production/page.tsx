@@ -158,7 +158,7 @@ export default function Production() {
                                         <i className="fas fa-check mr-2"></i>
                                         Save
                                     </Link>
-                                    <Link href={``} className="button">
+                                    <Link href={`/erp/production/lost/${production.id}`} className="button">
                                         <i className="fas fa-flag mr-2"></i>
                                         Lost
                                     </Link>

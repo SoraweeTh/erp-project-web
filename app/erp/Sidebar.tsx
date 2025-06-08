@@ -129,10 +129,10 @@ export default function Sidebar() {
                                 </a>
                             </li>
                             <li className="sidebar-nav-item">
-                                <a onClick={() => navigateAndSetCurrentPath('/erp/stock')}
-                                    className={isActive('/erp/stock')}>
+                                <a onClick={() => navigateAndSetCurrentPath('/erp/store')}
+                                    className={isActive('/erp/store')}>
                                     <i className="fas fa-box-open mr-2"></i>
-                                    <span>Stock Item</span>
+                                    <span>Store</span>
                                 </a>
                             </li>
                             <li className="sidebar-nav-item">
