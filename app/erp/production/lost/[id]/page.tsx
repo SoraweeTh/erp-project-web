@@ -93,7 +93,7 @@ export default function ProductionLost() {
     const handleDelete = async (id: number) => {
         try {
             const confirm = await Swal.fire({
-                icon: 'warning',
+                icon: 'question',
                 title: 'Confirm to Delete!',
                 text: 'Are you sure you want to delete this item ?',
                 showCancelButton: true,

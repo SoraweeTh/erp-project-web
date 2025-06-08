@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 
 interface ModalProps {
     id?: string
-    size?: 'sm' | 'md' | 'lg' | 'xl'
+    size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
     title?: string
     children: React.ReactNode
     onClose: () => void
@@ -39,7 +39,8 @@ const Modal = ({ id, size = 'md', title, children, onClose }: ModalProps) => {
         sm: 'max-w-sm',
         md: 'max-w-md',
         lg: 'max-w-lg',
-        xl: 'max-w-xl'
+        xl: 'max-w-xl',
+        '2xl': 'max-w-3xl'
     }
 
     return (
