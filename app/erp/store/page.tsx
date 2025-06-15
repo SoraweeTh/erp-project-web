@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import Modal from "../components/Modal";
 import { ProductionInterface } from "@/app/interface/ProductionInterface";
 import { StoreImportInterface } from "@/app/interface/StoreImportInterface";
+import { TransferStoreInterface } from "@/app/interface/TransferStoreInterface";
 
 export default function Store() {
     const [stores, setStores] = useState<StoreInterface[]>([]);
@@ -27,36 +28,36 @@ export default function Store() {
     const [remarkImport, setRemarkImport] = useState<string>('');
     const [quantityImport, setQuantityImport] = useState<number>(0);
 
-    // modal history
+    // modal history import
     const [showModalHistory, setShowModalHistory] = useState<boolean>(false);
     const [storeImports, setStoreImports] = useState<StoreImportInterface[]>([]);
+
+    // modal transfer
+    const [showModalTransfer, setShowModalTransfer] = useState<boolean>(false);
+    const [fromStoreId, setFromStoreId] = useState<number>(0);
+    const [toStoreId, setToStoreId] = useState<number>(0);
+    const [qtyTransfer, setQtyTransfer] = useState<number>(0);
+    const [remarkTransfer, setRemarkTransfer] = useState<string>('');
+    const [transferCreatedAt, setTransferCreatedAt] = useState<Date>(new Date());
+    const [fromStoreName, setFromStoreName] = useState<string>('');
+    const [productionIdToTransfer, setProductionIdToTransfer] = useState<number>(0);
+
+    // modal history transfer
+    const [showModalHistoryTransfer, setShowModalHistoryTransfer] = useState<boolean>(false);
+    const [transferStores, setTransferStores] = useState<TransferStoreInterface[]>([]);
 
     useEffect(() => {
         fetchStores();
         fetchProductions();
     }, [])
 
+
+    // store
     const fetchStores = async () => {
         try {
             const response = await axios.get(`${Config.apiUrl}/api/store`);
             if (response.status == 200) {
                 setStores(response.data);
-            }
-        } catch (err: any) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: err.message
-            })
-        }
-    }
-
-    const fetchProductions = async () => {
-        try {
-            const response = await axios.get(`${Config.apiUrl}/api/productions`);
-            if (response.status === 200) {
-                setProductions(response.data);
-                changeProduction(response.data[0].id);
             }
         } catch (err: any) {
             Swal.fire({
@@ -131,14 +132,6 @@ export default function Store() {
         setAddress(store.address);
         setRemark(store.remark);
         setShowModal(true);
-        // const store = stores.find(s => s.id === id);
-        // if (store) {
-        //     setId(store.id);
-        //     setName(store.name);
-        //     setAddress(store.address);
-        //     setRemark(store.remark);
-        //     setShowModal(true);
-        // }
     }
 
     const handleAdd = () => {
@@ -160,6 +153,23 @@ export default function Store() {
         setRemark('');
     }
 
+    // production
+    const fetchProductions = async () => {
+        try {
+            const response = await axios.get(`${Config.apiUrl}/api/productions`);
+            if (response.status === 200) {
+                setProductions(response.data);
+                changeProduction(response.data[0].id);
+            }
+        } catch (err: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: err.message
+            })
+        }
+    }
+
     const changeProduction = async (id: number) => {
         setProductionId(id);
         try {
@@ -172,6 +182,22 @@ export default function Store() {
                 setTotalProductionLog(pLog);
                 setTotalProductionLost(pLost);
                 setTotalProductionFree(pFree);
+            }
+        } catch (err: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: err.message
+            })
+        }
+    }
+
+    // import + history
+    const fetchStoreImports = async (id: number) => {
+        try {
+            const response = await axios.get(`${Config.apiUrl}/api/store/import/${id}`);
+            if (response.status === 200) {
+                setStoreImports(response.data);
             }
         } catch (err: any) {
             Swal.fire({
@@ -198,12 +224,6 @@ export default function Store() {
             const response = await axios.post(`${Config.apiUrl}/api/store/import`, payload);
             if (response.status === 200) {
                 closeModalImport();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Import to store successfully!',
-                    timer: 2000
-                })
             }
         } catch (err: any) {
             Swal.fire({
@@ -223,21 +243,6 @@ export default function Store() {
         setShowModalImport(false);
     }
 
-    const fetchStoreImports = async (id: number) => {
-        try {
-            const response = await axios.get(`${Config.apiUrl}/api/store/import/${id}`);
-            if (response.status === 200) {
-                setStoreImports(response.data);
-            }
-        } catch (err: any) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: err.message
-            })
-        }
-    }
-
     const handleDeleteImport = async (id: number) => {
         const button = await Swal.fire({
             icon: 'question',
@@ -249,6 +254,12 @@ export default function Store() {
         try {
             if (button.isConfirmed) {
                 await axios.delete(`${Config.apiUrl}/api/store/import/${id}`);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Deleted from store successfully',
+                    timer: 2000
+                })
             }
         } catch (err: any) {
             Swal.fire({
@@ -268,15 +279,123 @@ export default function Store() {
     const closeModalHistory = () => {
         setShowModalHistory(false);
     }
+
+    // transfer
+    const openModalTransfer = (input: string, fromStoreId: number) => {
+        setShowModalTransfer(true);
+        setFromStoreName(input);
+        setFromStoreId(fromStoreId);
+
+    }
+
+    const closeModalTransfer = () => {
+        setShowModalTransfer(false);
+        setFromStoreId(0);
+        setToStoreId(0);
+        setQtyTransfer(0);
+        setRemarkTransfer('');
+        setTransferCreatedAt(new Date());
+        setProductionIdToTransfer(productions[0].id);
+    }
+
+    const handleTransferStock = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const payload = {
+                fromStore: {
+                    id: fromStoreId
+                },
+                toStore: {
+                    id: toStoreId
+                },
+                production: {
+                    id: productionIdToTransfer
+                },
+                quantity: qtyTransfer,
+                remark: remarkTransfer,
+                createdAt: transferCreatedAt.toISOString()
+            }
+            const response = await axios.post(`${Config.apiUrl}/api/transfer-stock`, payload);
+            if (response.status === 200) {
+                closeModalTransfer();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Transferred succesfully',
+                    timer: 1000
+                })
+            }
+        } catch (err: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: err.message
+            })
+        }
+    }
+
+    // history transfer
+    const openModalHistoryTransfer = async () => {
+        setShowModalHistoryTransfer(true);
+        fetchHistoryTransfer();
+    }
+
+    const closeModalHistoryTransfer = () => {
+        setShowModalHistoryTransfer(false);
+    }
+
+    const fetchHistoryTransfer = async () => {
+        try {
+            const response = await axios.get(`${Config.apiUrl}/api/transfer-stock`);
+            if (response.status === 200) {
+                setTransferStores(response.data);
+            }
+        } catch (err: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: err.message
+            })
+        }
+    }
+
+    const handleDeleteHistoryTransfer = async (id: number) => {
+        try {
+            const button = await Swal.fire({
+                icon: 'question',
+                title: 'Confirm to Delete!',
+                text: 'Are you sure you want to delete this log ?',
+                showCancelButton: true,
+                showConfirmButton: true
+            })
+
+            if (button.isConfirmed) {
+                const response = await axios.delete(`${Config.apiUrl}/api/transfer-stock/${id}`);
+                if (response.data === 200) {
+                    fetchHistoryTransfer();
+                }
+            }
+        } catch (err: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: err.message
+            })
+        }
+    }
     
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-5">Store Management</h1>
             <div className="flex flex-col gap-2 mt-3">
-                <div>
+                <div className="flex gap-2">
                     <button className="button-add" onClick={handleAdd}>
                         <i className="fas fa-plus mr-2"></i>
                         Add
+                    </button>
+                    <button className="button-add" onClick={openModalHistoryTransfer}>
+                        <i className="fas fa-exchange-alt mr-2"></i>
+                        Transfer History
                     </button>
                 </div>
 
@@ -284,7 +403,7 @@ export default function Store() {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th>Store Name</th>
+                                <th>Name</th>
                                 <th>Address</th>
                                 <th>Remark</th>
                                 <th className="w-[120px]"></th>
@@ -298,9 +417,14 @@ export default function Store() {
                                     <td>{store.remark}</td>
                                     <td className="flex gap-2 justify-center">
                                         <button className="table-action-btn table-edit-btn"
+                                            onClick={() => openModalTransfer(store.name, store.id)}>
+                                            <i className="fas fa-exchange mr-2"></i>
+                                            Transferred
+                                        </button>
+                                        <button className="table-action-btn table-edit-btn"
                                             onClick={() => openModalImport(store.id)}>
                                             <i className="fas fa-plus mr-2"></i>
-                                            Import stock
+                                            Imported
                                         </button>
                                         <button className="table-action-btn table-edit-btn"
                                             onClick={() => openModalHistory(store.id)}>
@@ -362,7 +486,7 @@ export default function Store() {
             )}
 
             {showModalImport && (
-                <Modal id="import-stock" title="Import to Stock" onClose={closeModalImport}>
+                <Modal id="import-stock" title="Importing" onClose={closeModalImport}>
                     <form onSubmit={(e) => handleImport(e)}>
                         <div className="mb-3">
                             <label>Imported Production</label>
@@ -422,7 +546,7 @@ export default function Store() {
             )}
 
             {showModalHistory && (
-                <Modal id="history" title="Importing Stock History" onClose={closeModalHistory} size="2xl">
+                <Modal id="history" title="Stock History" onClose={closeModalHistory} size="2xl">
                     <div className="table-container">
                         <table className="table">
                             <thead>
@@ -444,6 +568,98 @@ export default function Store() {
                                         <td>
                                             <button className="table-action-btn table-delete-btn"
                                                 onClick={() => handleDeleteImport(storeImport.id)}>
+                                                <i className="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </Modal>
+            )}
+
+            {showModalTransfer && (
+                <Modal id="transfer-stock" title="Transferring" onClose={closeModalTransfer} size="md">
+                    <form className="flex flex-col gap-2" 
+                        onSubmit={(e) => handleTransferStock(e)}>
+                        <div>
+                            <label>From</label>
+                            <input type="text" value={fromStoreName} disabled />
+                        </div>
+                        <div>
+                            <label>To</label>
+                            <select onChange={(e) => setToStoreId(Number(e.target.value))}>
+                                {stores.map((store) => (
+                                    <option key={store.id} value={store.id}>
+                                        {store.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label>Production</label>
+                            <select onChange={(e) => setProductionIdToTransfer(Number(e.target.value))}>
+                                {productions.map((production) => (
+                                    <option key={production.id} value={production.id}>
+                                        {production.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label>Amount</label>
+                            <input type="number" onChange={(e) => setQtyTransfer(Number(e.target.value))} />
+                        </div>
+                        <div>
+                            <label>Remark</label>
+                            <input type="text" onChange={(e) => setRemarkTransfer(e.target.value)} />
+                        </div>
+                        <div>
+                            <label>Transferring Date</label>
+                            <input type="date" onChange={(e) => setTransferCreatedAt(new Date(e.target.value))} />
+                        </div>
+                        <div className="flex justify-end gap-2 mt-2">
+                            <button type="button" className="modal-btn modal-btn-cancel">
+                                <i className="fas fa-times mr-2"></i>
+                                Cancel
+                            </button>
+                            <button type="submit" className="modal-btn modal-btn-submit">
+                                <i className="fas fa-check mr-2"></i>
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
+
+            {showModalHistoryTransfer && (
+                <Modal id="history-transfer" title="Transferred History" onClose={closeModalHistoryTransfer} size="3xl">
+                    <div className="table-container">
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Production</th>
+                                    <th>Quantity</th>
+                                    <th>Remark</th>
+                                    <th>Date</th>
+                                    <th className="w-[60px]"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {transferStores.map((transferStore) => (
+                                    <tr key={transferStore.id}>
+                                        <td>{transferStore.fromStore.name}</td>
+                                        <td>{transferStore.toStore.name}</td>
+                                        <td>{transferStore.production.name}</td>
+                                        <td>{transferStore.quantity}</td>
+                                        <td>{transferStore.remark}</td>
+                                        <td>{new Date(transferStore.createdAt).toLocaleDateString()}</td>
+                                        <td>
+                                            <button className="table-action-btn table-delete-btn"
+                                                onClick={() => handleDeleteHistoryTransfer(transferStore.id)}>
                                                 <i className="fas fa-trash"></i>
                                             </button>
                                         </td>

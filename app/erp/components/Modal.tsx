@@ -40,7 +40,8 @@ const Modal = ({ id, size = 'md', title, children, onClose }: ModalProps) => {
         md: 'max-w-md',
         lg: 'max-w-lg',
         xl: 'max-w-xl',
-        '2xl': 'max-w-3xl'
+        '2xl': 'max-w-3xl',
+        '3xl': 'max-w-4xl'
     }
 
     return (
