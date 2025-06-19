@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 
 interface ModalProps {
     id?: string
-    size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+    size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
     title?: string
     children: React.ReactNode
     onClose: () => void

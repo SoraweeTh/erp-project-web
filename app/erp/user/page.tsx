@@ -31,11 +31,11 @@ export default function User() {
             if (response.status == 200) {
                 setUsers(response.data);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -71,11 +71,11 @@ export default function User() {
                 setPassword('');
                 fetchUsers();
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -105,11 +105,11 @@ export default function User() {
                     fetchUsers();
                 }
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }

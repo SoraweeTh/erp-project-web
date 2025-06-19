@@ -26,11 +26,11 @@ export default function Material() {
             if (response.status === 200) {
                 setMaterials(response.data);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Unable to get material data : ' + err.message
+                text: 'Unable to get material data : ' + (err as Error).message 
             });
         }
     }
@@ -71,11 +71,11 @@ export default function Material() {
                     timer: 1000
                 });
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Unable to save material : ' + err.message
+                text: 'Unable to save material : ' + (err as Error).message 
             });
         }
     }
@@ -112,11 +112,11 @@ export default function Material() {
                     });
                 }
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Unable to delete production ' + err.message
+                text: 'Unable to delete production ' + (err as Error).message 
             });
         }
     }

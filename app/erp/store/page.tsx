@@ -59,11 +59,11 @@ export default function Store() {
             if (response.status == 200) {
                 setStores(response.data);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -92,11 +92,11 @@ export default function Store() {
                 closeModal();
                 fetchStores();
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -117,11 +117,11 @@ export default function Store() {
                     fetchStores();
                 }
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -161,11 +161,11 @@ export default function Store() {
                 setProductions(response.data);
                 changeProduction(response.data[0].id);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -183,11 +183,11 @@ export default function Store() {
                 setTotalProductionLost(pLost);
                 setTotalProductionFree(pFree);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -199,11 +199,11 @@ export default function Store() {
             if (response.status === 200) {
                 setStoreImports(response.data);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -225,11 +225,11 @@ export default function Store() {
             if (response.status === 200) {
                 closeModalImport();
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -261,11 +261,11 @@ export default function Store() {
                     timer: 2000
                 })
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -325,11 +325,11 @@ export default function Store() {
                     timer: 1000
                 })
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -350,11 +350,11 @@ export default function Store() {
             if (response.status === 200) {
                 setTransferStores(response.data);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -375,11 +375,11 @@ export default function Store() {
                     fetchHistoryTransfer();
                 }
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }

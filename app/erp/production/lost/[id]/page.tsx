@@ -31,11 +31,11 @@ export default function ProductionLost() {
             if (response.status == 200) {
                 setProduction(response.data);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -46,11 +46,11 @@ export default function ProductionLost() {
             if (response.status == 200) {
                 setProductionLosts(response.data);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -81,11 +81,11 @@ export default function ProductionLost() {
                 closeModal();
                 fetchProductionLost();
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }
@@ -105,11 +105,11 @@ export default function ProductionLost() {
                     fetchProductionLost();
                 }
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             })
         }
     }

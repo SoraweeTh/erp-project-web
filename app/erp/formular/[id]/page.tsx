@@ -33,11 +33,11 @@ export default function Formular() {
             if (response.status === 200) {
                 setProduction(response.data);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             });
         }
     }
@@ -49,11 +49,11 @@ export default function Formular() {
                 setMaterials(response.data);
                 setMaterialId(response.data[0].id);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             });
         }
     }
@@ -64,11 +64,11 @@ export default function Formular() {
             if (response.status == 200) {
                 setFormulars(response.data);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             });
         }
     }
@@ -97,11 +97,11 @@ export default function Formular() {
                 closeModal();
                 fetchFormulars();
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             });
         }
     }
@@ -121,11 +121,11 @@ export default function Formular() {
                     fetchFormulars();
                 }
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message 
             });
         }
     }
