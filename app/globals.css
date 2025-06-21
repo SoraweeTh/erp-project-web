@@ -182,3 +182,7 @@
   @apply bg-gradient-to-b from-emerald-600 to-emerald-800 text-gray-100 hover:from-emerald-700 
   hover:to-emerald-900 shadow-lg shadow-emerald-500/20 transition-all duration-200 ease-in-out;
 }
+
+.input-endsale {
+  @apply text-right text-2xl font-bold
+}

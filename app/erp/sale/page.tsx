@@ -17,6 +17,9 @@ export default function Sale() {
     const [discount, setDiscount] = useState<number>(0);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [saleTemps, setSaleTemps] = useState<SaleTempInterface[]>([]);
+    const [showModalEndSale, setShowModalEndSale] = useState<boolean>(false);
+    const [receiveAmount, setReceiveAmount] = useState<number>(0);
+    const [returnAmount, setReturnAmount] = useState<number>(0);
 
     useEffect(() => {
         fetchProductions();
@@ -174,28 +177,90 @@ export default function Sale() {
         }
     }
 
+    const openModalEndSale = () => {
+        setShowModalEndSale(true);
+    }
+
+    const closeModalEndSale = () => {
+        setShowModalEndSale(false);
+        setReceiveAmount(0);
+        setDiscount(0);
+        setReturnAmount(0);
+    }
+
+    const handleChangeAmountReceived = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.trim();
+        const inputValue = Number(value);
+        if (!isNaN(inputValue)) {
+            setReceiveAmount(inputValue);
+            setReturnAmount(inputValue - (total + discount));
+        }
+    }
+
+    const handleChangeDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.trim();
+        const discountValue = Number(value);
+        if (!isNaN(discountValue)) {
+            setDiscount(discountValue);
+            setReturnAmount(receiveAmount - (total + discountValue));
+        }
+    }
+
+    const handleExactBill = () => {
+        setReturnAmount(0);
+        setDiscount(0);
+        setReceiveAmount(total);
+    }
+
+    const handleEndSale = async () => {
+        const button = await Swal.fire({
+            icon: 'question',
+            title: 'Confirm to Check Out',
+            showCancelButton: true,
+            showConfirmButton: true
+        })
+        try {
+            if (button.isConfirmed) {
+                const headers = getHeaders();
+                const payload = {
+                    receiveAmount: receiveAmount,
+                    discount: discount,
+                    total: total
+                }
+                const response = await axios.post(`${Config.apiUrl}/api/saleTemp/endSale`, payload, {headers});
+                if (response.status === 200) {
+                    closeModalEndSale();
+                    fetchDataSaleTemp();
+                }
+            } else {
+                openModalEndSale();
+            }
+        } catch (err: unknown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: (err as Error).message
+            })
+        }
+    }
+
     return (
         <div className="container p-4">
             <h1 className="text-2xl font-bold mb-5">Sale</h1>
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
+                <button className="button" onClick={openModalEndSale}>
+                    <i className="fas fa-wallet"></i>
+                </button>
                 <span className="text-2xl font-bold bg-gray-900 px-4 py-2 rounded-md 
                     text-green-300 border border-green-600">{total.toLocaleString('th-TH', {minimumFractionDigits: 2})}</span>
             </div>
             <div className="flex flex-col gap-2">
-                <div className="flex gap-1">
+                <div className="flex gap-2">
                     <input type="text" placeholder="Enter product code" className="form-input" />
                     <button className="button" onClick={openModal}>
                         <i className="fas fa-search mr-3"></i>
                         Search
                     </button>
-                </div>
-
-                <div className="flex gap-2">
-                    Total
-                    <span className="font-bold">{saleTemps.length}</span>
-                    products
-                    <span className="font-bold">{quantity}</span>
-                    items
                 </div>
 
                 <div className="table-container">
@@ -244,6 +309,14 @@ export default function Sale() {
                     </table>
                 </div>
                 
+                <div className="flex justify-start gap-2">
+                    Total
+                    <span className="font-bold">{saleTemps.length}</span>
+                    products
+                    <span className="font-bold">{quantity}</span>
+                    items
+                </div>
+
             </div>
 
             {showModal && (
@@ -264,8 +337,7 @@ export default function Sale() {
                                         <td>
                                             <button className="button" 
                                                 onClick={() => handleSelectedProduction(production)}>
-                                                <i className="fas fa-check mr-2"></i>
-                                                Selected
+                                                <i className="fas fa-check"></i>
                                             </button>
                                         </td>
                                         <td>{production.id}</td>
@@ -275,6 +347,44 @@ export default function Sale() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                </Modal>
+            )}
+
+            {showModalEndSale && (
+                <Modal id="end-sale" title="Closing The Deal" onClose={closeModalEndSale} size="md">
+                    <div className="flex flex-col gap-2">
+                        <div className="mb-3">
+                            <div className="text-2xl font-bold text-right mb-2">Total</div>
+                            <input type="text" value={total.toLocaleString()} disabled 
+                                className="input-endsale"/>
+                        </div>
+                        <div className="mb-3">
+                            <div className="text-xl font-bold text-right mb-2 text-gray-400">Amount Received</div>
+                            <input type="text" value={receiveAmount} className="input-endsale" 
+                                onChange={(e) => handleChangeAmountReceived(e)}/>
+                        </div>
+                        <div className="mb-3">
+                            <div className="text-xl font-bold text-right mb-2 text-gray-400">Discount</div>
+                            <input type="text" value={discount} className="input-endsale" 
+                                onChange={(e) => handleChangeDiscount(e)}/>
+                        </div>
+                        <div className="mb-3">
+                            <div className="text-xl font-bold text-right mb-2 text-gray-400">Amount of Change</div>
+                            <input type="text" value={returnAmount} className="input-endsale" 
+                                onChange={(e) => setReturnAmount(Number(e.target.value))}/>
+                        </div>
+
+                        <div className="flex justify-end mt-5 gap-2">
+                            <button className="button" onClick={handleExactBill}>
+                                <i className="fas fa-check mr-2"></i>
+                                No Change
+                            </button>
+                            <button className="button" onClick={handleEndSale}>
+                                <i className="fas fa-check mr-2"></i>
+                                Close Sales
+                            </button>
+                        </div>
                     </div>
                 </Modal>
             )}
