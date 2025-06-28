@@ -150,6 +150,13 @@ export default function Sidebar() {
                                 </a>
                             </li>
                             <li className="sidebar-nav-item">
+                                <a onClick={() => navigateAndSetCurrentPath('/erp/bill-sale')}
+                                    className={isActive('/erp/bill-sale')}>
+                                    <i className="fas fa-file-invoice-dollar mr-2"></i>
+                                    <span>Bill Sales</span>
+                                </a>
+                            </li>
+                            <li className="sidebar-nav-item">
                                 <a onClick={() => navigateAndSetCurrentPath('/erp/accounting')}
                                     className={isActive('/erp/accounting')}>
                                     <i className="fas fa-calculator mr-2"></i>

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"
 export default function EditProfile() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const router = useRouter();
@@ -29,6 +30,7 @@ export default function EditProfile() {
             if (response.status === 200) {
                 setUsername(response.data.username);
                 setEmail(response.data.email);
+                setRole(response.data.role);
             }
         } catch (err) {
             Swal.fire({

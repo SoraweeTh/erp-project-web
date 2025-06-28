@@ -5,6 +5,7 @@ import Swal from "sweetalert2"
 import { Config } from "@/app/Config"
 import Modal from "../components/Modal"
 import axios from "axios"
+import { UserInterface } from "@/app/interface/UserInterface"
 
 interface User {
     id: number,
@@ -13,13 +14,13 @@ interface User {
 }
 
 export default function User() {
-    const [users, setUsers] = useState<User[]>([]);
-    const [showModal, setShowModal] = useState(false);
+    const [users, setUsers] = useState<UserInterface[]>([]);
+    const [showModal, setShowModal] = useState<boolean>(false);
     const [userId, setUserId] = useState<number>();
-    const [editingUser, setEditingUser] = useState<User | null>(null);
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [editingUser, setEditingUser] = useState<UserInterface | null>(null);
+    const [email, setEmail] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     useEffect(() => {
         fetchUsers();
@@ -80,7 +81,7 @@ export default function User() {
         }
     }
 
-    const handleDelete = async (user: User) => {
+    const handleDelete = async (user: UserInterface) => {
         try {
             const result = await Swal.fire({
                 icon: 'warning',
@@ -114,7 +115,7 @@ export default function User() {
         }
     }
 
-    const handleEdit = (user: User) => {
+    const handleEdit = (user: UserInterface) => {
         console.log('user id: ' + user.id);
         setEditingUser(user);
         setEmail(user.email);
@@ -145,6 +146,7 @@ export default function User() {
                         <tr>
                             <th>Email</th>
                             <th className="w-[120px]">Username</th>
+                            <th>Role</th>
                             <th className="text-right" style={{width: '100px'}}>&nbsp;</th>
                         </tr>
                     </thead>
@@ -153,6 +155,7 @@ export default function User() {
                             <tr key={user.id}>
                                 <td>{user.email}</td>
                                 <td>{user.username}</td>
+                                <td>{user.role}</td>
                                 <td className="text-right">
                                     <button className="table-action-btn table-edit-btn mr-2"
                                         onClick={() => handleEdit(user)}
