@@ -246,7 +246,7 @@ export default function Sale() {
 
     return (
         <div className="container p-4">
-            <h1 className="text-2xl font-bold mb-5">Sale</h1>
+            <h1 className="text-2xl font-bold mb-5">Sales</h1>
             <div className="flex justify-end gap-2">
                 <button className="button" onClick={openModalEndSale}>
                     <i className="fas fa-wallet"></i>

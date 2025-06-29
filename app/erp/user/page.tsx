@@ -21,6 +21,7 @@ export default function User() {
     const [email, setEmail] = useState<string>('');
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [role, setRole] = useState<string>('');
 
     useEffect(() => {
         fetchUsers();
@@ -51,7 +52,8 @@ export default function User() {
                 id: editingUser?.id || null,
                 email: email,
                 username: username,
-                password: password || ''
+                password: password || '',
+                role: role
             }
             const headers = {
                 'Authorization': 'Bearer ' + localStorage.getItem(Config.TokenKey)
@@ -190,6 +192,14 @@ export default function User() {
                             <label className="block mb-2">Password</label>
                             <input type="password" className="form-input"
                                 onChange={e => setPassword(e.target.value)} />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block mb-2">Role</label>
+                            <select className="form-input" value={role}
+                                onChange={e => setRole(e.target.value)}>
+                                <option value="employee">Employee</option>
+                                <option value="admin">Admin</option>
+                            </select>
                         </div>
                         <div className="flex justify-end gap-2">
                             <button type="button" onClick={() => setShowModal(false)}

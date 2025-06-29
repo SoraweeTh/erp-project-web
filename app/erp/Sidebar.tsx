@@ -8,8 +8,9 @@ import { Config } from "../Config"
 import Link from "next/link"
 
 export default function Sidebar() {
-    const [username, setUsername] = useState('');
-    const [currentPath, setCurrentPath] = useState('');
+    const [username, setUsername] = useState<string>('');
+    const [currentPath, setCurrentPath] = useState<string>('');
+    const [role, setRole] = useState<string>('');
     const router = useRouter();
 
     useEffect(() => {
@@ -31,6 +32,11 @@ export default function Sidebar() {
     const fetchData = async () => {
         try {
             const token = localStorage.getItem(Config.TokenKey);
+            if (!token) {
+                router.push('/');
+                return;
+            }
+
             const response = await axios.get(`${Config.apiUrl}/api/users/admin-info`, {
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -39,6 +45,7 @@ export default function Sidebar() {
 
             if (response.status === 200) {
                 setUsername(response.data.username);
+                setRole(response.data.role);
             }
         } catch (err) {
             Swal.fire({
@@ -60,6 +67,7 @@ export default function Sidebar() {
             });
 
             if (button.isConfirmed) {
+                document.cookie = `${Config.TokenKey}=; path=/; max-age=0`;
                 localStorage.removeItem(Config.TokenKey);
                 router.push('/');
             }
@@ -106,7 +114,7 @@ export default function Sidebar() {
                         </h1>
                         <div className="text-lg font-normal mt-3 mb-4">
                             <i className="fas fa-user mr-3"></i>
-                            {username}
+                            {username} [{role}]
                         </div>
                         <div className="flex gap-2 m-3 justify-center">
                             <Link href="/erp/user/edit" className="btn-edit">
@@ -121,62 +129,92 @@ export default function Sidebar() {
                     </div>
                     <nav>
                         <ul className="sidebar-nav-list">
-                            <li className="sidebar-nav-item">
-                                <a onClick={() => navigateAndSetCurrentPath('/erp/dashboard')}
-                                    className={isActive('/erp/dashboard')}>
-                                    <i className="fas fa-home mr-2"></i>
-                                    <span>Dashboard</span>
-                                </a>
-                            </li>
-                            <li className="sidebar-nav-item">
-                                <a onClick={() => navigateAndSetCurrentPath('/erp/store')}
-                                    className={isActive('/erp/store')}>
-                                    <i className="fas fa-box-open mr-2"></i>
-                                    <span>Store</span>
-                                </a>
-                            </li>
-                            <li className="sidebar-nav-item">
-                                <a onClick={() => navigateAndSetCurrentPath('/erp/production')}
-                                    className={isActive('/erp/production')}>
-                                    <i className="fas fa-cogs mr-2"></i>
-                                    <span>Production</span>
-                                </a>
-                            </li>
-                            <li className="sidebar-nav-item">
-                                <a onClick={() => navigateAndSetCurrentPath('/erp/sale')}
-                                    className={isActive('/erp/sale')}>
-                                    <i className="fas fa-money-bill mr-2"></i>
-                                    <span>Sales</span>
-                                </a>
-                            </li>
-                            <li className="sidebar-nav-item">
-                                <a onClick={() => navigateAndSetCurrentPath('/erp/bill-sale')}
-                                    className={isActive('/erp/bill-sale')}>
-                                    <i className="fas fa-file-invoice-dollar mr-2"></i>
-                                    <span>Bill Sales</span>
-                                </a>
-                            </li>
-                            <li className="sidebar-nav-item">
-                                <a onClick={() => navigateAndSetCurrentPath('/erp/accounting')}
-                                    className={isActive('/erp/accounting')}>
-                                    <i className="fas fa-calculator mr-2"></i>
-                                    <span>Accounting</span>
-                                </a>
-                            </li>
-                            <li className="sidebar-nav-item">
-                                <a onClick={() => navigateAndSetCurrentPath('/erp/report')}
-                                    className={isActive('/erp/report')}>
-                                    <i className="fas fa-chart-line mr-2"></i>
-                                    <span>Report</span>
-                                </a>
-                            </li>
-                            <li className="sidebar-nav-item">
-                                <a onClick={() => navigateAndSetCurrentPath('/erp/user')}
-                                    className={isActive('/erp/user')}>
-                                    <i className="fas fa-user-alt mr-2"></i>
-                                    <span>User</span>
-                                </a>
-                            </li>
+                            {role == 'admin' && (
+                                <>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/dashboard')}
+                                            className={isActive('/erp/dashboard')}>
+                                            <i className="fas fa-home mr-2"></i>
+                                            <span>Dashboard</span>
+                                        </a>
+                                    </li>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/store')}
+                                            className={isActive('/erp/store')}>
+                                            <i className="fas fa-box-open mr-2"></i>
+                                            <span>Store</span>
+                                        </a>
+                                    </li>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/production')}
+                                            className={isActive('/erp/production')}>
+                                            <i className="fas fa-cogs mr-2"></i>
+                                            <span>Production</span>
+                                        </a>
+                                    </li>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/sale')}
+                                            className={isActive('/erp/sale')}>
+                                            <i className="fas fa-money-bill mr-2"></i>
+                                            <span>Sales</span>
+                                        </a>
+                                    </li>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/bill-sale')}
+                                            className={isActive('/erp/bill-sale')}>
+                                            <i className="fas fa-file-invoice-dollar mr-2"></i>
+                                            <span>Bill Sales</span>
+                                        </a>
+                                    </li>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/accounting')}
+                                            className={isActive('/erp/accounting')}>
+                                            <i className="fas fa-calculator mr-2"></i>
+                                            <span>Accounting</span>
+                                        </a>
+                                    </li>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/report')}
+                                            className={isActive('/erp/report')}>
+                                            <i className="fas fa-chart-line mr-2"></i>
+                                            <span>Report</span>
+                                        </a>
+                                    </li>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/user')}
+                                            className={isActive('/erp/user')}>
+                                            <i className="fas fa-user-alt mr-2"></i>
+                                            <span>User</span>
+                                        </a>
+                                    </li>
+                                </>
+                            )}
+
+                            {role == 'employee' && (
+                                <>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/store')}
+                                            className={isActive('/erp/store')}>
+                                            <i className="fas fa-box-open mr-2"></i>
+                                            <span>Store</span>
+                                        </a>
+                                    </li>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/production')}
+                                            className={isActive('/erp/production')}>
+                                            <i className="fas fa-cogs mr-2"></i>
+                                            <span>Production</span>
+                                        </a>
+                                    </li>
+                                    <li className="sidebar-nav-item">
+                                        <a onClick={() => navigateAndSetCurrentPath('/erp/sale')}
+                                            className={isActive('/erp/sale')}>
+                                            <i className="fas fa-money-bill mr-2"></i>
+                                            <span>Sales</span>
+                                        </a>
+                                    </li>
+                                </>
+                            )}
                         </ul>
                     </nav>
                 </div>

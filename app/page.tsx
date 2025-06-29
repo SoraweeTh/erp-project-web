@@ -21,8 +21,14 @@ export default function Home() {
       const response = await axios.post(url, payload);
 
       if (response.status === 200) {
-        localStorage.setItem(Config.TokenKey, response.data);
-        router.push('/erp/dashboard');
+        document.cookie = `${Config.TokenKey}=${response.data.token}`;
+        localStorage.setItem(Config.TokenKey, response.data.token);
+        
+        if (response.data.role === 'admin') {
+          router.push('/erp/dashboard');
+        } else {
+          router.push('/erp/sale');
+        }
       }
 
     } catch (err) {
